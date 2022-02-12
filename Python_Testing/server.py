@@ -19,6 +19,12 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+today = datetime.datetime.now()
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date, fmt=None):
+    date = datetime.datetime.fromisoformat(date)
+    return date
 
 @app.route('/')
 def index():
@@ -38,7 +44,7 @@ def book(competition,club):
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', today=today, club=club, competitions=competitions)
 
 
 @app.route('/purchasePlaces',methods=['POST'])
